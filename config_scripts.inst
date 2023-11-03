@@ -82,6 +82,8 @@ systemctl enable node_exporter
 #удаление временных файлов
 rm -r /home/vovzila/ELK/node_exporter-1.6.1.linux-amd64
 rm /home/vovzila/ELK/node_exporter-1.6.1.linux-amd64.tar.gz
+#Изменение прав для файла, который будет исполнять cron при перезагрузке системы для восстановления доступа к общему ресурсу
+chmod 755 /home/vovzila/ELK/cronboot
 #iptables
 iptables -A INPUT -i lo -j ACCEPT 
 iptables -A OUTPUT -o lo -j ACCEPT
