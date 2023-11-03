@@ -1,0 +1,74 @@
+#Настройка переменной имя для Git
+git config --global user.name Vovzila
+#Настройка переменной Email для Git
+git config --global user.email vovzila@mail.ru
+#Клонирование необходимых для восстановления файло из репозитория GitHub
+git clone https://vovzila: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@github.com/Vovzila/ELK.git
+wait
+#копирование конфигов NTP
+cp /home/vovzila/ELK/ELK/timesyncd.conf /etc/systemd/timesyncd.conf
+wait
+#перезапуск службы синхронизации времени (необходима для корректного подклбчения к домену, т.к. в роли ntp выступает контроллер AD)
+systemctl restart systemd-timesyncd
+#Создание директории, в которую будет подключаться общий ресурс из существующей инфрастуктуры с авторизацией через политики AD
+mkdir /mnt/windir
+#Конфиговский файл с описанием окружения при подключении к домену
+cp /home/vovzila/ELK/ELK/realmd.conf /etc/realmd.conf
+#Ввод в домен
+echo ubuntu321 | realm join -U ubuntu bis.vrn.ru
+wait
+#Таймаут в 10 секунд для успешной отработки контроллера домена
+sleep 10
+#Подключение к общему ресурсу
+mount.cifs //192.168.100.3/"Общая шара" /mnt/windir -o username=ubuntu,password=ubuntu321
+wait
+#Таймаут в 10 секунд для успешной отработки подключения к общему ресурсу
+sleep 10
+#Установка пакета Elasticsearch
+dpkg -i /mnt/windir/project/elasticsearch-8.9.1-amd64.deb
+#Файл с настройками ограничений по использованию RAM
+cp /home/vovzila/ELK/jvm.options /etc/elasticsearch/jvm.options.d/jvm.options
+#файл с конфигами elasticsearch
+cp /home/vovzila/ELK/elasticsearch.yml /etc/elasticsearch/elasticsearch.yml
+#Установка пакета Kibana
+dpkg -i /mnt/windir/project/kibana-8.9.1-amd64.deb
+#конфиг kibana
+cp /home/vovzila/ELK/kibana.yml /etc/kibana/kibana.yml
+#Установка пакета logstash
+#общий конфиг logstash
+cp /home/vovzila/ELK/logstash.yml /etc/logstash/logstash.yml
+#доп. конфиг
+cp /home/vovzila/ELK/logstash-nginx-es.conf /etc/logstash/conf.d/logstash-nginx-es.conf
+#Перезапуск списка демонов
+sudo systemctl daemon-reload
+#Добавление в автозагрузку и запуск в данный момент демона elasticsearch
+systemctl enable --now elasticsearch.service
+#Добавление в автозагрузку и запуск в данный момент демона kibana
+systemctl enable --now kibana.service
+#Добавление в автозагрузку и запуск в данный момент демона logstash
+systemctl enable --now logstash.service
+#Копирование с общего ресурса архива с node_exporter
+cp /mnt/windir/project/node_exporter-1.6.1.linux-amd64.tar.gz /home/vovzila/ELK/node_exporter-1.6.1.linux-amd64.tar.gz
+wait
+#Разархивация node_exporter
+tar xzvf node_exporter-*.t*gz
+wait
+#создание пользователя для node_exporter
+useradd --no-create-home --shell /bin/false node_exporter
+#копирование файлов node_exporter в конечную директорию
+cp node_exporter-*.linux-amd64/node_exporter /usr/local/bin
+wait
+#изменение владельца файлов node_exporter
+chown node_exporter: /usr/local/bin/node_exporter
+#Копирование файла демона node_exporter
+cp /home/vovzila/ELK/node_exporter.service /etc/systemd/system/node_exporter.service
+wait
+#перезагрузка списка демонов
+systemctl daemon-reload
+#запуск демона node_exporter
+systemctl start node_exporter
+#добавление демона node_exporter в автозапуск при загрузке
+systemctl enable node_exporter
+#удаление временных файлов
+rm -r /home/vovzila/ELK/ELK/node_exporter-1.6.1.linux-amd64
+rm /home/vovzila/ELK/ELK/node_exporter-1.6.1.linux-amd64.tar.gz
