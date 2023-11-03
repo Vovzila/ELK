@@ -6,14 +6,14 @@ git config --global user.email vovzila@mail.ru
 git clone https://vovzila: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@github.com/Vovzila/ELK.git
 wait
 #копирование конфигов NTP
-cp /home/vovzila/ELK/ELK/timesyncd.conf /etc/systemd/timesyncd.conf
+cp /home/vovzila/ELK/timesyncd.conf /etc/systemd/timesyncd.conf
 wait
 #перезапуск службы синхронизации времени (необходима для корректного подклбчения к домену, т.к. в роли ntp выступает контроллер AD)
 systemctl restart systemd-timesyncd
 #Создание директории, в которую будет подключаться общий ресурс из существующей инфрастуктуры с авторизацией через политики AD
 mkdir /mnt/windir
 #Конфиговский файл с описанием окружения при подключении к домену
-cp /home/vovzila/ELK/ELK/realmd.conf /etc/realmd.conf
+cp /home/vovzila/ELK/realmd.conf /etc/realmd.conf
 #Ввод в домен
 echo ubuntu321 | realm join -U ubuntu bis.vrn.ru
 wait
