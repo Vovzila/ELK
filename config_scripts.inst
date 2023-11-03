@@ -59,6 +59,7 @@ systemctl enable --now logstash.service
 #Копирование с общего ресурса архива с node_exporter
 cp /mnt/windir/project/node_exporter-1.6.1.linux-amd64.tar.gz /home/vovzila/ELK/node_exporter-1.6.1.linux-amd64.tar.gz
 wait
+cd /home/vovzila/ELK/
 #Разархивация node_exporter
 tar xzvf node_exporter-*.t*gz
 wait
@@ -79,5 +80,5 @@ systemctl start node_exporter
 #добавление демона node_exporter в автозапуск при загрузке
 systemctl enable node_exporter
 #удаление временных файлов
-rm -r /home/vovzila/ELK/ELK/node_exporter-1.6.1.linux-amd64
-rm /home/vovzila/ELK/ELK/node_exporter-1.6.1.linux-amd64.tar.gz
+rm -r /home/vovzila/ELK/node_exporter-1.6.1.linux-amd64
+rm /home/vovzila/ELK/node_exporter-1.6.1.linux-amd64.tar.gz
