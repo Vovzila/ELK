@@ -26,21 +26,30 @@ wait
 sleep 10
 #Установка пакета Elasticsearch
 dpkg -i /mnt/windir/project/elasticsearch-8.9.1-amd64.deb
+wait
+#Установка logstash
+dpkg -i /mnt/windir/project/logstash-8.9.1-amd64.deb
+wait
 #Файл с настройками ограничений по использованию RAM
 cp /home/vovzila/ELK/jvm.options /etc/elasticsearch/jvm.options.d/jvm.options
 #файл с конфигами elasticsearch
 cp /home/vovzila/ELK/elasticsearch.yml /etc/elasticsearch/elasticsearch.yml
 #Установка пакета Kibana
 dpkg -i /mnt/windir/project/kibana-8.9.1-amd64.deb
+wait
 #конфиг kibana
 cp /home/vovzila/ELK/kibana.yml /etc/kibana/kibana.yml
+wait
 #Установка пакета logstash
 #общий конфиг logstash
 cp /home/vovzila/ELK/logstash.yml /etc/logstash/logstash.yml
+wait
 #доп. конфиг
 cp /home/vovzila/ELK/logstash-nginx-es.conf /etc/logstash/conf.d/logstash-nginx-es.conf
+wait
 #Перезапуск списка демонов
 sudo systemctl daemon-reload
+wait
 #Добавление в автозагрузку и запуск в данный момент демона elasticsearch
 systemctl enable --now elasticsearch.service
 #Добавление в автозагрузку и запуск в данный момент демона kibana
