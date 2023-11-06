@@ -75,13 +75,17 @@ cp /home/vovzila/ELK/node_exporter.service /etc/systemd/system/node_exporter.ser
 wait
 #перезагрузка списка демонов
 systemctl daemon-reload
+wait
 #запуск демона node_exporter
 systemctl start node_exporter
+wait
 #добавление демона node_exporter в автозапуск при загрузке
 systemctl enable node_exporter
+wait
 #удаление временных файлов
 rm -r /home/vovzila/ELK/node_exporter-1.6.1.linux-amd64
 rm /home/vovzila/ELK/node_exporter-1.6.1.linux-amd64.tar.gz
+wait
 #Изменение прав для файла, который будет исполнять cron при перезагрузке системы для восстановления доступа к общему ресурсу
 chmod 755 /home/vovzila/ELK/cronboot
 #iptables
@@ -105,5 +109,6 @@ ip6tables -A INPUT -p ipv6-icmp -j ACCEPT
 ip6tables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 ip6tables -P INPUT -j REJECT --reject-with icmp6-adm-prohibited
 ip6tables -P FORWARD -j REJECT --reject-with icmp6-adm-prohibited
+wait
 #фиксация iptables
 apt install -y iptables-persistent
