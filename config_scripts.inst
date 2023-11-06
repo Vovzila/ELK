@@ -120,5 +120,6 @@ cd /home/vovzila/ELK/kibana-backup-simple/
 wait
  mv /home/vovzila/ELK/backup-default.ndjson /home/vovzila/ELK/kibana-backup-simple/backup-default.ndjson
 wait
+python setup.py install
 sleep 180
 kibana-backup.py  restore --kibana-url http://192.168.30.203:5601 --all-spaces --backup-file-prefix=backup-
