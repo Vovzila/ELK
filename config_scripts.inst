@@ -112,3 +112,6 @@ ip6tables -P FORWARD -j REJECT --reject-with icmp6-adm-prohibited
 wait
 #фиксация iptables
 apt install -y iptables-persistent
+wait
+git clone https://github.com/selivan/kibana-backup-simple.git
+cd /home/vovzila/ELK/kibana-backup-simple/
